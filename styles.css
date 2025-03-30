@@ -1,0 +1,500 @@
+/* Reset a základné štýly */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eee;
+}
+
+h1, h2, h3, h4 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+/* Layout - dva stĺpce */
+.two-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.column {
+    flex: 1;
+    min-width: 300px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.half-width {
+    width: 48%;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Formuláre */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+select {
+    cursor: pointer;
+}
+
+button {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.small-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}
+
+.btn-secondary {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #0b7dda;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
+}
+
+/* Panely a sekcie */
+.settings-panel, 
+.material-selection, 
+.windows-container, 
+.total-values, 
+.action-buttons {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fafafa;
+}
+
+/* Globálne parametre */
+.global-params {
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* Vlastný materiál */
+#custom-material-container {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+#custom-material-name {
+    flex-grow: 1;
+}
+
+/* Zoznam okien */
+#windows-list {
+    margin-bottom: 15px;
+}
+
+.window-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.window-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.window-content {
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.window-left {
+    width: 300px;
+}
+
+.window-right {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Obrázok okna */
+.window-image-container {
+    margin-bottom: 15px;
+}
+
+.window-image-placeholder {
+    border: 2px dashed #ddd;
+    padding: 15px;
+    text-align: center;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.window-image-placeholder p {
+    margin-bottom: 10px;
+    color: #888;
+}
+
+.window-image-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.window-image-upload {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.paste-image {
+    margin-top: 10px;
+}
+
+/* Rozmery a parametre */
+.window-dimensions, 
+.window-parameters, 
+.window-result {
+    margin-bottom: 20px;
+}
+
+.parameter-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.parameter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.dimension-row, 
+.parameter-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.parameter-row.full-width {
+    margin-top: 10px;
+}
+
+.parameter-row label {
+    width: 100%;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.dimension-input, 
+.parameter-input {
+    width: 100%;
+}
+
+.dimension-result {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.result-item {
+    margin-bottom: 8px;
+}
+
+.result-item.input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.result-item.input-row label {
+    flex: 1;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.result-item.input-row input {
+    flex: 1;
+    width: auto;
+}
+
+.result-value {
+    font-weight: bold;
+    color: #2196F3;
+}
+
+/* Výsledok výpočtu */
+.window-result {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.result-box {
+    padding: 15px;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: inline-block;
+    min-width: 250px;
+}
+
+.result-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.result-value-large {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* Tlačidlo výpočtu */
+.calc-button-container {
+    text-align: center;
+    margin: 15px 0;
+}
+
+/* Celkové hodnoty */
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.total-row:last-child {
+    border-bottom: none;
+}
+
+/* Tlačidlá akcií */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Responzívny dizajn */
+@media screen and (max-width: 768px) {
+    .two-columns, .parameter-groups {
+        flex-direction: column;
+    }
+
+    .window-content {
+        flex-direction: column;
+    }
+
+    .window-left, 
+    .window-right {
+        width: 100%;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+}
+
+/* Status hodnotení */
+.status-vyhovuje {
+    color: green;
+}
+
+.status-nevyhovuje {
+    color: red;
+    font-weight: bold;
+}
+
+/* Štýly pre tlačovú stranu */
+@page {
+    size: A4 portrait;
+    margin: 15mm;
+}
+
+.area-adjustment {
+    margin-top: 15px;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.checkbox-row input[type="checkbox"] {
+    width: auto;
+}
+
+.checkbox-row label {
+    margin-bottom: 0;
+}
+
+.radio-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.radio-row input[type="radio"] {
+    width: auto;
+}
+
+.radio-row label {
+    margin-bottom: 0;
+    margin-right: 15px;
+}
+
+.area-check {
+    margin-top: 10px;
+}
+
+.area-check-calculation {
+    margin-top: 5px;
+    font-weight: bold;
+    color: #2196F3;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.area-check-status {
+    margin-left: 5px;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.area-check-status.ok {
+    color: green;
+}
+
+.area-check-status.error {
+    color: red;
+}
+
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: white;
+    }
+
+    .container {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}

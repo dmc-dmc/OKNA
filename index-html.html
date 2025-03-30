@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tepelnotechnické posúdenie otvorových konštrukcií</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tepelnotechnické posúdenie otvorových konštrukcií</h1>
+        </header>
+
+        <div class="settings-panel">
+            <div class="form-group full-width">
+                <label for="project-title">Názov projektu:</label>
+                <input type="text" id="project-title" placeholder="Zadajte názov projektu">
+            </div>
+            <div class="form-group full-width">
+                <label for="project-subtitle">Podnadpis projektu:</label>
+                <input type="text" id="project-subtitle" placeholder="Zadajte podnadpis projektu">
+            </div>
+            
+            <div class="two-columns">
+                <div class="column">
+                    <div class="form-group">
+                        <label for="first-page-number">Číslo prvej strany:</label>
+                        <input type="number" id="first-page-number" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="normative-value">Normová hodnota U<sub>w,N</sub>:</label>
+                        <input type="number" id="normative-value" value="0.85" step="0.01">
+                        <div class="form-row">
+                            <select id="saved-normative-values">
+                                <option value="">Vyberte uloženú hodnotu</option>
+                            </select>
+                            <button id="save-normative-value" class="small-btn">Uložiť hodnotu</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="form-group">
+                        <label for="air-exchange-value">Normová hodnota výmeny vzduchu n (1/h):</label>
+                        <input type="number" id="air-exchange-value" value="0.5" step="0.01">
+                        <div class="form-row">
+                            <select id="saved-air-exchange-values">
+                                <option value="">Vyberte uloženú hodnotu</option>
+                            </select>
+                            <button id="save-air-exchange-value" class="small-btn">Uložiť hodnotu</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="building-volume">Obostavaný objem budovy V<sub>b</sub> (m³):</label>
+                        <input type="number" id="building-volume" placeholder="Zadajte objem budovy">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="material-selection">
+            <h2>Materiál a globálne parametre otvorových konštrukcií</h2>
+            <div class="two-columns">
+                <div class="column">
+                    <div class="form-group">
+                        <label for="window-material">Typ materiálu:</label>
+                        <select id="window-material">
+                            <option value="wooden">Drevené</option>
+                            <option value="wood-aluminum">Drevohliníkové</option>
+                            <option value="plastic">Plastové</option>
+                            <option value="aluminum">Hliníkové</option>
+                            <option value="steel">Oceľové</option>
+                            <option value="composite">Kompozitné</option>
+                            <option value="custom">Vlastný materiál</option>
+                        </select>
+                        <div id="custom-material-container" style="display:none;">
+                            <div class="form-row">
+                                <input type="text" id="custom-material-name" placeholder="Zadajte názov materiálu">
+                                <button id="add-custom-material" class="small-btn">Pridať</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h3>Globálne parametre pre všetky okná</h3>
+                    <div class="global-params">
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label for="global-u-f">U<sub>f</sub> (W/(m²·K)):</label>
+                                <input type="number" id="global-u-f" step="0.001" placeholder="Súčiniteľ rámu">
+                            </div>
+                            <div class="form-group half-width">
+                                <label for="global-u-g">U<sub>g</sub> (W/(m²·K)):</label>
+                                <input type="number" id="global-u-g" step="0.001" placeholder="Súčiniteľ zasklenia">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label for="global-psi-g">ψ<sub>g</sub> (W/(m·K)):</label>
+                                <input type="number" id="global-psi-g" step="0.001" placeholder="Lineárny činiteľ">
+                            </div>
+                            <div class="form-group half-width">
+                                <button id="apply-global-params" class="btn-secondary">Preniesť globálne parametre</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="windows-container">
+            <h2>Otvorové konštrukcie</h2>
+            <div id="windows-list"></div>
+            <button id="add-window" class="btn-primary">Pridať otvorovú konštrukciu</button>
+        </div>
+
+        <div class="total-values">
+            <h2>Celkové hodnoty</h2>
+            <div class="total-row">
+                <span>Celková plocha otvorových konštrukcií:</span>
+                <span id="total-area">0 m²</span>
+            </div>
+            <div class="total-row">
+                <span>Vážený priemer súčiniteľa prechodu tepla:</span>
+                <span id="average-u-value">0 W/(m².K)</span>
+            </div>
+            <div class="total-row">
+                <span>Posúdenie súčiniteľa prechodu tepla:</span>
+                <span id="u-assessment"></span>
+            </div>
+            <div class="total-row">
+                <span>Výpočet výmeny vzduchu pre celú budovu:</span>
+                <span id="air-exchange-result">0 1/h</span>
+            </div>
+            <div class="total-row">
+                <span>Posúdenie výmeny vzduchu:</span>
+                <span id="air-exchange-assessment"></span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="calculate-all" class="btn-primary">Vypočítať všetky hodnoty</button>
+            <button id="generate-print" class="btn-primary">Generovať tlačový náhľad</button>
+            <button id="export-csv" class="btn-secondary">Export do CSV</button>
+            <button id="export-json" class="btn-secondary">Export do JSON</button>
+            <button id="reset-data" class="btn-danger">Zmazať všetky údaje</button>
+        </div>
+    </div>
+
+    <!-- Template pre okno -->
+    <template id="window-template">
+        <div class="window-item" data-index="{index}">
+            <div class="window-header">
+                <h3>Otvorová konštrukcia #{index}</h3>
+                <div class="window-actions">
+                    <button class="apply-global-to-window btn-secondary" data-index="{index}">Preniesť globálne parametre</button>
+                    <button class="duplicate-window btn-secondary" data-index="{index}">Duplikovať</button>
+                    <button class="remove-window btn-danger" data-index="{index}">Odstrániť</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="window-left">
+                    <div class="window-image-container">
+                        <div class="window-image-placeholder" id="window-image-{index}">
+                            <p>Vložte obrázok okna</p>
+                            <input type="file" id="window-image-upload-{index}" class="window-image-upload" accept="image/*">
+                            <button class="paste-image small-btn" data-index="{index}">Vložiť zo schránky</button>
+                        </div>
+                    </div>
+                    
+                    <div class="window-dimensions">
+                        <div class="dimension-row">
+                            <div class="form-group half-width">
+                                <label for="window-count-{index}">Počet:</label>
+                                <input type="number" id="window-count-{index}" class="window-count-input" value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="dimension-row">
+                            <div class="form-group half-width">
+                                <label for="window-width-{index}">Šírka (mm):</label>
+                                <input type="number" id="window-width-{index}" class="dimension-input" placeholder="Šírka">
+                            </div>
+                            <div class="form-group half-width">
+                                <label for="window-height-{index}">Výška (mm):</label>
+                                <input type="number" id="window-height-{index}" class="dimension-input" placeholder="Výška">
+                            </div>
+                        </div>
+                        <div class="dimension-result">
+                            <div class="result-item">
+                                <span>Obvod okna - dĺžka rámu (m): </span>
+                                <span id="window-perimeter-{index}" class="result-value">0.000</span>
+                            </div>
+                            <div class="result-item input-row">
+                                <label for="total-joint-length-input-{index}">Celková dĺžka škáry (m):</label>
+                                <input type="number" id="total-joint-length-input-{index}" class="parameter-input" step="0.001" value="0">
+                            </div>
+                            <div class="result-item">
+                                <span>Celková plocha okna A<sub>w</sub> (m²): </span>
+                                <span id="total-area-{index}" class="result-value">0.000</span>
+                            </div>
+                            <div class="area-adjustment">
+                                <div class="checkbox-row">
+                                    <input type="checkbox" id="use-area-adjustment-{index}">
+                                    <label for="use-area-adjustment-{index}">Upraviť celkovú plochu okna</label>
+                                </div>
+                                <div class="adjustment-controls" id="area-adjustment-controls-{index}" style="display: none;">
+                                    <div class="radio-row">
+                                        <input type="radio" id="area-cut-{index}" name="area-adjustment-type-{index}" value="cut" checked>
+                                        <label for="area-cut-{index}">Výrez</label>
+                                        <input type="radio" id="area-addition-{index}" name="area-adjustment-type-{index}" value="addition">
+                                        <label for="area-addition-{index}">Doplnok</label>
+                                    </div>
+                                    <div class="input-row">
+                                        <label for="area-adjustment-value-{index}">Hodnota úpravy (m²):</label>
+                                        <input type="number" id="area-adjustment-value-{index}" class="parameter-input" step="0.001" value="0">
+                                    </div>
+                                    <div class="result-item">
+                                        <span>Upravená plocha A<sub>w</sub> (m²): </span>
+                                        <span id="adjusted-area-{index}" class="result-value">0.000</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="result-item area-check">
+                                <div>Kontrola: A<sub>f</sub> + A<sub>g</sub> (m²):</div>
+                                <div class="area-check-calculation">
+                                    <span id="sum-areas-detailed-{index}"></span>
+                                    <span id="area-check-status-{index}" class="area-check-status"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="window-right">
+                    <div class="window-parameters">
+                        <h4>Tepelnotechnické parametre</h4>
+                        <div class="parameter-groups">
+                            <div class="parameter-group">
+                                <div class="parameter-row">
+                                    <label for="u-f-{index}">U<sub>f</sub> (W/(m²·K)):</label>
+                                    <input type="number" id="u-f-{index}" class="parameter-input" step="0.001" placeholder="Súčiniteľ rámu">
+                                </div>
+                                <div class="parameter-row">
+                                    <label for="a-f-{index}">A<sub>f</sub> (m²):</label>
+                                    <input type="number" id="a-f-{index}" class="parameter-input" step="0.001" placeholder="Plocha rámu">
+                                </div>
+                            </div>
+                            <div class="parameter-group">
+                                <div class="parameter-row">
+                                    <label for="u-g-{index}">U<sub>g</sub> (W/(m²·K)):</label>
+                                    <input type="number" id="u-g-{index}" class="parameter-input" step="0.001" placeholder="Súčiniteľ zasklenia">
+                                </div>
+                                <div class="parameter-row">
+                                    <label for="a-g-{index}">A<sub>g</sub> (m²):</label>
+                                    <input type="number" id="a-g-{index}" class="parameter-input" step="0.001" placeholder="Plocha zasklenia">
+                                </div>
+                            </div>
+                            <div class="parameter-group">
+                                <div class="parameter-row">
+                                    <label for="psi-g-{index}">ψ<sub>g</sub> (W/(m·K)):</label>
+                                    <input type="number" id="psi-g-{index}" class="parameter-input" step="0.001" placeholder="Lineárny činiteľ">
+                                </div>
+                                <div class="parameter-row">
+                                    <label for="l-g-{index}">l<sub>g</sub> (m):</label>
+                                    <input type="number" id="l-g-{index}" class="parameter-input" step="0.001" placeholder="Dĺžka zasklenia">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="parameter-row full-width">
+                            <label for="air-permeability-{index}">Súčiniteľ škárovej prievzdušnosti<br>i<sub>LV</sub>·10<sup>-4</sup> (m³/(m·s·Pa<sup>0,67</sup>)):</label>
+                            <input type="number" id="air-permeability-{index}" class="parameter-input" value="1.4" step="0.1">
+                        </div>
+                        <div class="calc-button-container">
+                            <button class="calculate-window btn-primary" data-index="{index}">Vypočítať</button>
+                        </div>
+                    </div>
+                    <div class="window-result">
+                        <div class="result-box">
+                            <div class="result-label">Súčiniteľ prechodu tepla okna</div>
+                            <div class="result-value-large">
+                                U<sub>w</sub> = <span id="u-w-{index}">0.000</span> W/(m²·K)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+    <script src="export.js"></script>
+</body>
+</html>
