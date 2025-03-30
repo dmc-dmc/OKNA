@@ -799,105 +799,111 @@ function updateWindowData(index) {
 
 // Aktualizácia výsledkov rozmerov
 function updateDimensionResults(index) {
-    const window = windowsData[index];
-    
-    // Prevod mm na m
-    const width = window.width / 1000;
-    const height = window.height / 1000;
-    
-    // Výpočet obvodu okna (perimeter) - len informatívna hodnota
-    const windowPerimeter = 2 * (width + height);
-    
-    // Výpočet celkovej plochy
-    const calculatedArea = width * height;
-    
-    // Kontrola, či sa má použiť úprava plochy
-    const useAreaAdjustment = document.getElementById(`use-area-adjustment-${index}`).checked;
-    
-    let finalArea = calculatedArea;
-    
-    if (useAreaAdjustment) {
-        const adjustmentType = document.querySelector(`input[name="area-adjustment-type-${index}"]:checked`).value;
-        const adjustmentValue = parseFloat(document.getElementById(`area-adjustment-value-${index}`).value) || 0;
+    try {
+        console.log("Updating dimension results for index:", index);
         
-        if (adjustmentType === 'cut') {
-            // Výrez - odpočítame hodnotu od plochy
-            finalArea = Math.max(0, calculatedArea - adjustmentValue);
-        } else {
-            // Doplnok - pripočítame hodnotu k ploche
-            finalArea = calculatedArea + adjustmentValue;
+        const window = windowsData[index];
+        
+        // 1. Prevod mm na m
+        const width = window.width / 1000;
+        const height = window.height / 1000;
+        
+        // 2. Výpočet obvodu a základnej plochy
+        const windowPerimeter = 2 * (width + height);
+        const calculatedArea = width * height;
+        
+        console.log("Basic calculations:", { width, height, windowPerimeter, calculatedArea });
+        
+        // 3. Aktualizácia UI pre základné hodnoty
+        const perimeterElement = document.getElementById(`window-perimeter-${index}`);
+        if (perimeterElement) {
+            perimeterElement.textContent = windowPerimeter.toFixed(3);
         }
         
-        // Zobraziť upravenú plochu
-        document.getElementById(`adjusted-area-${index}`).textContent = finalArea.toFixed(3);
-    } else {
-        // Ak nie je použitá úprava, upravená plocha = vypočítaná plocha
-        document.getElementById(`adjusted-area-${index}`).textContent = calculatedArea.toFixed(3);
+        // 4. Nastavenie dĺžky škáry
+        const jointLengthInput = document.getElementById(`total-joint-length-input-${index}`);
+        if (jointLengthInput && (parseFloat(jointLengthInput.value) === 0 || !window.jointLength)) {
+            jointLengthInput.value = windowPerimeter.toFixed(3);
+            window.jointLength = windowPerimeter;
+        }
+        
+        // 5. Výpočet finálnej plochy (s prípadnou úpravou)
+        let finalArea = calculatedArea;
+        const useAreaAdjustmentCheckbox = document.getElementById(`use-area-adjustment-${index}`);
+        
+        if (useAreaAdjustmentCheckbox && useAreaAdjustmentCheckbox.checked) {
+            const isAdjustmentCut = document.getElementById(`area-cut-${index}`).checked;
+            const adjustmentValue = parseFloat(document.getElementById(`area-adjustment-value-${index}`).value) || 0;
+            
+            if (isAdjustmentCut) {
+                finalArea = Math.max(0, calculatedArea - adjustmentValue);
+            } else {
+                finalArea = calculatedArea + adjustmentValue;
+            }
+            
+            console.log("Area adjustment:", { isAdjustmentCut, adjustmentValue, finalArea });
+        }
+        
+        // 6. Aktualizácia UI pre plochy
+        document.getElementById(`total-area-${index}`).textContent = finalArea.toFixed(3);
+        
+        const adjustedAreaElement = document.getElementById(`adjusted-area-${index}`);
+        if (adjustedAreaElement) {
+            adjustedAreaElement.textContent = finalArea.toFixed(3);
+        }
+        
+        // 7. Aktualizácia dát
+        window.windowPerimeter = windowPerimeter;
+        window.calculatedArea = calculatedArea;
+        window.area = finalArea;
+        
+        // 8. Kontrola súčtu Af + Ag
+        checkAreaSum(index);
+        
+        console.log("Window data updated:", window);
+        
+        // 9. Uloženie dát
+        saveData();
+    } catch (error) {
+        console.error("Error in updateDimensionResults:", error);
     }
-    
-    // Aktualizácia UI pre obvod okna
-    const perimeterElement = document.getElementById(`window-perimeter-${index}`);
-    if (perimeterElement) {
-        perimeterElement.textContent = windowPerimeter.toFixed(3);
-    }
-    
-    // Nastavenie hodnoty dĺžky škáry ak ešte nie je nastavená alebo je 0
-    const jointLengthInput = document.getElementById(`total-joint-length-input-${index}`);
-    if (jointLengthInput && (parseFloat(jointLengthInput.value) === 0 || !window.jointLength)) {
-        jointLengthInput.value = windowPerimeter.toFixed(3);
-        window.jointLength = windowPerimeter;
-    }
-    
-    // Aktualizácia UI pre plochu
-    document.getElementById(`total-area-${index}`).textContent = useAreaAdjustment ? finalArea.toFixed(3) : calculatedArea.toFixed(3);
-    
-    // Kontrola súčtu Af + Ag
-    checkAreaSum(index);
-    
-    // Aktualizácia dát
-    window.windowPerimeter = windowPerimeter;
-    window.calculatedArea = calculatedArea;
-    window.area = finalArea;
-    window.useAreaAdjustment = useAreaAdjustment;
-    window.adjustmentType = useAreaAdjustment ? document.querySelector(`input[name="area-adjustment-type-${index}"]:checked`).value : null;
-    window.adjustmentValue = useAreaAdjustment ? parseFloat(document.getElementById(`area-adjustment-value-${index}`).value) || 0 : 0;
-    
-    saveData();
 }
 
 // Kontrola súčtu Af + Ag
 function checkAreaSum(index) {
-    const window = windowsData[index];
-    const af = parseFloat(document.getElementById(`a-f-${index}`).value) || 0;
-    const ag = parseFloat(document.getElementById(`a-g-${index}`).value) || 0;
-    
-    const sumAreas = af + ag;
-    const totalArea = window.useAreaAdjustment ? window.area : window.calculatedArea;
-    
-    // Zobrazenie súčtu Af + Ag s čiastkovými hodnotami
-    const sumAreasElement = document.getElementById(`sum-areas-detailed-${index}`);
-    if (sumAreasElement) {
-        sumAreasElement.textContent = `${af.toFixed(3)} + ${ag.toFixed(3)} = ${sumAreas.toFixed(3)}`;
-    } else {
-        console.error(`Element sum-areas-detailed-${index} not found`);
-    }
-    
-    // Kontrola, či Af + Ag = Aw (s malou toleranciou pre zaokrúhlenie)
-    const areaStatus = document.getElementById(`area-check-status-${index}`);
-    if (areaStatus) {
-        const tolerance = 0.001; // tolerancia pre zaokrúhlenie
+    try {
+        console.log("Checking area sum for index:", index);
         
-        if (Math.abs(sumAreas - totalArea) <= tolerance) {
-            // Af + Ag = Aw
-            areaStatus.textContent = "✓ OK";
-            areaStatus.className = "area-check-status ok";
-        } else {
-            // Af + Ag ≠ Aw
-            areaStatus.textContent = "✗ Chyba: hodnoty sa nerovnajú";
-            areaStatus.className = "area-check-status error";
+        const window = windowsData[index];
+        const af = parseFloat(document.getElementById(`a-f-${index}`).value) || 0;
+        const ag = parseFloat(document.getElementById(`a-g-${index}`).value) || 0;
+        
+        const sumAreas = af + ag;
+        const totalArea = window.area || 0;
+        
+        console.log("Areas check:", { af, ag, sumAreas, totalArea });
+        
+        // Zobrazenie súčtu s čiastkovými hodnotami
+        const sumAreasElement = document.getElementById(`sum-areas-detailed-${index}`);
+        if (sumAreasElement) {
+            sumAreasElement.textContent = `${af.toFixed(3)} + ${ag.toFixed(3)} = ${sumAreas.toFixed(3)}`;
         }
-    } else {
-        console.error(`Element area-check-status-${index} not found`);
+        
+        // Kontrola rovnosti
+        const areaStatus = document.getElementById(`area-check-status-${index}`);
+        if (areaStatus) {
+            const tolerance = 0.001; // tolerancia
+            
+            if (Math.abs(sumAreas - totalArea) <= tolerance) {
+                areaStatus.textContent = "✓ OK";
+                areaStatus.className = "area-check-status ok";
+            } else {
+                areaStatus.textContent = "✗ Chyba: hodnoty sa nerovnajú";
+                areaStatus.className = "area-check-status error";
+            }
+        }
+    } catch (error) {
+        console.error("Error in checkAreaSum:", error);
     }
 }
 
